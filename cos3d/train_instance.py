@@ -1,0 +1,537 @@
+#
+# Copyright (C) 2023, Inria
+# GRAPHDECO research group, https://team.inria.fr/graphdeco
+# All rights reserved.
+#
+# This software is free for non-commercial, research and evaluation use 
+# under the terms of the LICENSE.md file.
+#
+# For inquiries contact  george.drettakis@inria.fr
+#
+
+import os
+import random
+import torch
+from random import randint
+from utils.loss_utils import l1_loss, l1_loss_map, get_trained_seg
+from gaussian_renderer import render, network_gui
+import sys
+from scene import Scene, GaussianModel
+from utils.general_utils import safe_state
+import uuid
+from tqdm import tqdm
+from utils.image_utils import psnr
+from argparse import ArgumentParser, Namespace
+from arguments import ModelParams, PipelineParams, OptimizationParams
+try:
+    from torch.utils.tensorboard import SummaryWriter
+    TENSORBOARD_FOUND = True
+except ImportError:
+    TENSORBOARD_FOUND = False
+
+import torch.nn.functional as F
+
+import numpy as np
+from sklearn.decomposition import PCA
+pca = PCA(n_components=3, svd_solver='full')
+from PIL import Image
+import torchvision
+from transfer import ARCHITECTURE_CODES, DDNTransferBranch
+
+
+import colorsys
+
+import numpy as np
+## I want to keep the centroid is always the same, as the input pts is the always the same for same machine
+# Randomly initialize 300 colors for visualizing the SAM mask. [OpenGaussian_v1]
+# random.seed(42)
+np.random.seed(42)
+torch.manual_seed(42)
+colors_defined = np.random.randint(100, 256, size=(300, 3))
+colors_defined[0] = np.array([0, 0, 0]) # Ignore the mask ID of -1 and set it to black.
+colors_defined = torch.from_numpy(colors_defined)
+
+
+def id2rgb(id, max_num_obj=256):
+    if not 0 <= id <= max_num_obj:
+        raise ValueError("ID should be in range(0, max_num_obj)")
+
+    # Convert the ID into a hue value
+    golden_ratio = 1.6180339887
+    h = ((id * golden_ratio) % 1)           # Ensure value is between 0 and 1
+    s = 0.5 + (id % 2) * 0.5       # Alternate between 0.5 and 1.0
+    l = 0.5
+
+    
+    # Use colorsys to convert HSL to RGB
+    rgb = np.zeros((3, ), dtype=np.uint8)
+    if id==0:   #invalid region
+        return rgb
+    r, g, b = colorsys.hls_to_rgb(h, l, s)
+    rgb[0], rgb[1], rgb[2] = int(r*255), int(g*255), int(b*255)
+
+    return rgb
+
+def visualize_obj(objects):
+    rgb_mask = np.zeros((*objects.shape[-2:], 3), dtype=np.uint8)
+    all_obj_ids = np.unique(objects)
+    for id in all_obj_ids:
+        colored_mask = id2rgb(id)
+        rgb_mask[objects == id] = colored_mask
+    return rgb_mask
+
+
+
+def get_contrastive_loss(feature, gt_obj):
+    
+    
+    feature = feature.reshape(feature.shape[0], -1).T
+    
+    loss_regularization = 100 * ((torch.norm(feature, dim=-1, keepdim=True) - 1.0) ** 2).mean()
+    
+    # feature =  feature / (torch.norm(feature, dim=-1, keepdim=True) + 1e-6).detach()
+    gt_obj = gt_obj.reshape(-1)
+    label_set = torch.unique(gt_obj)
+    wh = feature.shape[0]
+
+    # cluster_ids = torch.unique(gt_obj)
+    # choose_ids = []
+    # clustersize = 500
+    # for cid in cluster_ids:
+    #     list_ids = torch.arange(wh)[gt_obj == cid]
+    #     rand_idx = torch.randint(0, len(list_ids), [clustersize])
+    #     choose_ids.append(list_ids[rand_idx])
+    # random_idx = torch.cat(choose_ids)
+    
+    
+    batchsize = 32768
+    random_idx = torch.randint(0, wh, [batchsize], device=feature.device)
+    
+    # feature =
+    sam_t = gt_obj[random_idx]
+    sam_o = feature[random_idx]
+    
+    # print(sam_t.shape)
+    # print(sam_o.shape)
+    # exit()
+    
+    sam_o = sam_o / (torch.norm(sam_o, dim=-1, keepdim=True) + 1e-6).detach()
+    
+    
+    # results = {'semantic': out_obj[random_idx, :]}
+    # target = {'sam': gt_obj[random_idx]}
+    
+    
+    min_pixnum = 20
+    cluster_ids, cnums_all = torch.unique(sam_t, return_counts=True)
+    cluster_ids = cluster_ids[cnums_all > min_pixnum]
+    cnums = cnums_all[cnums_all > min_pixnum]
+    cnum = cluster_ids.shape[0] # cluster number
+    if cnum == 0:
+        return feature.sum() * 0.0, loss_regularization
+
+    u_list = torch.zeros([cnum, sam_o.shape[-1]], dtype=torch.float32, device=sam_o.device)
+    phi_list = torch.zeros([cnum, 1], dtype=torch.float32, device=sam_o.device)
+
+
+    for i in range(cnum):
+        cluster = sam_o[sam_t == cluster_ids[i], :]
+        u_list[i] = torch.mean(cluster, dim=0, keepdim=True)
+        phi_list[i] = torch.norm(cluster - u_list[i], dim=1, keepdim=True).sum() / (cnums[i] * torch.log(cnums[i] + 10))
+
+    
+
+    # tau = 0.1; phi_list[:, 0] = tau    # option 1: constant temperature
+    # phi_list = phi_list * (tau / phi_list.mean())     # option 2: (PCL) too small phi causes too large num in torch.exp().
+    # phi_list = (phi_list - phi_list.min()) / (phi_list.max() - phi_list.min()) * 5 + 0.1   # scale to range [0.1, 5.1]
+    phi_list = torch.clip(phi_list * 10, min=0.5, max=1.0)
+    phi_list = phi_list.detach()
+    
+    ProtoNCE = torch.zeros([1], dtype=torch.float32, device=sam_o.device)
+
+    for i in range(cnum):
+        cluster = sam_o[sam_t == cluster_ids[i], :]
+
+        dist = torch.exp(torch.matmul(cluster, u_list.T) / phi_list.T)  # [N_pix, N_cluster]
+
+        # if not patch_flag:
+
+        ProtoNCE += -torch.sum(torch.log(
+            dist[:, [i]] / (dist[:, :].sum(dim=1, keepdim=True) + 1e-6)
+            ))
+    
+
+    ProtoNCE = ProtoNCE/cnum
+    return ProtoNCE, loss_regularization
+
+
+def feature_to_rgb(features):
+    # Input features shape: (16, H, W)
+    
+    # Reshape features for PCA
+    H, W = features.shape[1], features.shape[2]
+    features_reshaped = features.view(features.shape[0], -1).T
+
+    features_reshaped =  features_reshaped / (torch.norm(features_reshaped, dim=-1, keepdim=True) + 1e-6).detach()
+    # Apply PCA and get the first 3 components
+    pca = PCA(n_components=3)
+    pca_result = pca.fit_transform(features_reshaped.cpu().numpy())
+
+    # Reshape back to (H, W, 3)
+    pca_result = pca_result.reshape(H, W, 3)
+
+    # Normalize to [0, 255]
+    pca_normalized = 255 * (pca_result - pca_result.min()) / (pca_result.max() - pca_result.min())
+
+    rgb_array = pca_normalized.astype('uint8')
+    return rgb_array
+
+
+
+def training(dataset, opt, pipe, testing_iterations, saving_iterations, checkpoint_iterations, checkpoint, debug_from, feature_mode, SAM_level, GS_original_path, transfer_args):
+    device0='cuda'
+    device1='cpu'
+        
+    first_iter = 0
+    tb_writer = prepare_output_and_logger(dataset)
+    dataset.original_model_path = GS_original_path
+    gaussians = GaussianModel(dataset.sh_degree)
+    scene = Scene(
+        dataset,
+        gaussians,
+        load_iteration=transfer_args.original_iteration,
+        shuffle=False,
+    )
+    gaussians.training_setup(opt, semantic_dim=dataset.semantic_dim)
+    viewpoint_stack = scene.getTrainCameras()
+    viewpoint_cam0 = viewpoint_stack[0]
+    render_h,render_w = viewpoint_cam0.image_height, viewpoint_cam0.image_width
+    print("render img with H,W:",render_h,",",render_w)
+    print("number of gaussians",gaussians._xyz.shape)
+    
+    print("SAM_level", SAM_level)
+    transfer_branch = None
+    transfer_optimizer = None
+    if transfer_args.transfer_arch != "none":
+        transfer_branch = DDNTransferBranch(
+            architecture=transfer_args.transfer_arch,
+            dino_weight_path=transfer_args.dino_ckpt,
+            channels=transfer_args.transfer_channels,
+            output_dim=dataset.semantic_dim,
+        ).cuda()
+        transfer_branch.train()
+        transfer_optimizer = torch.optim.AdamW(
+            transfer_branch.trainable_parameters(),
+            lr=transfer_args.transfer_lr,
+            weight_decay=transfer_args.transfer_weight_decay,
+        )
+        print(
+            "[DDN transfer] architecture={} code={} trainable_params={:,}".format(
+                transfer_args.transfer_arch,
+                ARCHITECTURE_CODES[transfer_args.transfer_arch],
+                transfer_branch.trainable_parameter_count(),
+            )
+        )
+    # set other parameters    
+    bg_color = [1, 1, 1] if dataset.white_background else [0, 0, 0]
+    background = torch.tensor(bg_color, dtype=torch.float32, device="cuda")
+
+    iter_start = torch.cuda.Event(enable_timing = True) 
+    iter_end = torch.cuda.Event(enable_timing = True)
+
+    viewpoint_stack = None
+    ema_loss_for_log = 0.0
+    progress_bar = tqdm(range(first_iter, opt.iterations), desc="Training progress")
+    first_iter += 1
+                
+    for iteration in range(first_iter, opt.iterations + 1):
+        if network_gui.conn == None:
+            network_gui.try_connect()
+        while network_gui.conn != None:
+            try:
+                net_image_bytes = None
+                custom_cam, do_training, pipe.convert_SHs_python, pipe.compute_cov3D_python, keep_alive, scaling_modifer = network_gui.receive()
+                if custom_cam != None:
+                    net_image = render(custom_cam, gaussians, pipe, background, scaling_modifer)["render"]
+                    net_image_bytes = memoryview((torch.clamp(net_image, min=0, max=1.0) * 255).byte().permute(1, 2, 0).contiguous().cpu().numpy()) #
+                network_gui.send(net_image_bytes, dataset.source_path)
+                if do_training and ((iteration < int(opt.iterations)) or not keep_alive):
+                    break
+            except Exception as e:
+                network_gui.conn = None
+
+        iter_start.record()
+
+        gaussians.update_learning_rate(iteration)
+
+        # Every 1000 its we increase the levels of SH up to a maximum degree
+        if iteration % 1000 == 0:
+            gaussians.oneupSHdegree()
+
+        # Pick a random Camera
+        if not viewpoint_stack:
+            viewpoint_stack = scene.getTrainCameras().copy() 
+        select_idx = randint(0, len(viewpoint_stack)-1) 
+        viewpoint_cam = viewpoint_stack.pop(select_idx) 
+
+        # Render
+        if (iteration - 1) == debug_from:
+            pipe.debug = True
+        render_pkg = render(viewpoint_cam, gaussians, pipe, background, feature_mode=feature_mode, feature_normalize=True) 
+        feature_map, viewspace_point_tensor, visibility_filter, radii = render_pkg["render"], render_pkg["viewspace_points"], render_pkg["visibility_filter"], render_pkg["radii"]
+        #
+
+
+        SAM_mask = viewpoint_cam.seg_map[SAM_level,:,:].to(feature_map.device)
+        #
+        
+        contrastive_loss, reg_loss = get_contrastive_loss(feature_map, SAM_mask)
+        loss = (contrastive_loss + reg_loss) * 1e-3
+        transfer_contrastive_loss = feature_map.new_zeros(())
+        alignment_loss = feature_map.new_zeros(())
+        if transfer_branch is not None:
+            transferred_feature = transfer_branch(
+                viewpoint_cam.original_image,
+                output_size=feature_map.shape[-2:],
+                cache_key=viewpoint_cam.image_name,
+            ).squeeze(0)
+            transfer_nce, transfer_reg = get_contrastive_loss(
+                transferred_feature, SAM_mask
+            )
+            transfer_contrastive_loss = (transfer_nce + transfer_reg) * 1e-3
+            valid_mask = SAM_mask != -1
+            rendered_normalized = F.normalize(feature_map, dim=0, eps=1e-6)
+            cosine_distance = 1.0 - (
+                rendered_normalized * transferred_feature
+            ).sum(dim=0)
+            if valid_mask.any():
+                alignment_loss = cosine_distance[valid_mask].mean()
+            loss = (
+                loss
+                + transfer_args.transfer_contrastive_weight
+                * transfer_contrastive_loss
+                + transfer_args.transfer_align_weight * alignment_loss
+            )
+
+        
+    
+        loss.backward()
+        iter_end.record()
+        #
+
+        with torch.no_grad():
+            if iteration == 1:
+                print(
+                    "[ITER 1] total={:.6f} cos3d_nce={:.6f} "
+                    "ddn_nce={:.6f} align={:.6f}".format(
+                        loss.item(),
+                        ((contrastive_loss + reg_loss) * 1e-3).item(),
+                        transfer_contrastive_loss.item(),
+                        alignment_loss.item(),
+                    )
+                )
+            if tb_writer is not None:
+                tb_writer.add_scalar("loss/total", loss.item(), iteration)
+                tb_writer.add_scalar(
+                    "loss/cos3d_nce",
+                    ((contrastive_loss + reg_loss) * 1e-3).item(),
+                    iteration,
+                )
+                tb_writer.add_scalar(
+                    "loss/ddn_nce",
+                    transfer_contrastive_loss.item(),
+                    iteration,
+                )
+                tb_writer.add_scalar(
+                    "loss/alignment",
+                    alignment_loss.item(),
+                    iteration,
+                )
+            # Progress bar
+            ema_loss_for_log = 0.4 * loss.item() + 0.6 * ema_loss_for_log
+            if iteration % 10 == 0:
+                progress_bar.set_postfix({
+                    "Loss": f"{ema_loss_for_log:.7f}",
+                    "DDN-NCE": f"{transfer_contrastive_loss.item():.4f}",
+                    "Align": f"{alignment_loss.item():.4f}",
+                })
+                progress_bar.update(10)
+            if iteration == opt.iterations:
+                progress_bar.close()
+
+            if iteration % 500 ==0:
+                rgb_mask = feature_to_rgb(feature_map)
+                
+                os.makedirs(os.path.join(scene.model_path, "save_img"), exist_ok = True)
+                # 
+                Image.fromarray(rgb_mask).save(os.path.join(scene.model_path, "save_img/PCA_Feature_iteration_{0:05d}.png".format(iteration)))
+                SAM_mask_vis = visualize_obj(SAM_mask.cpu().numpy().astype(np.uint8))
+                
+                Image.fromarray(SAM_mask_vis).save(os.path.join(scene.model_path, "save_img/SAM_{0:05d}.png".format(iteration)))
+                
+                
+
+            if (iteration in saving_iterations):
+                print("\n[ITER {}] Saving Gaussians".format(iteration))
+                mem = torch.cuda.max_memory_allocated() / 1024**3
+                print(f"Max memory used: {mem:.2f} GB")
+                scene.save(iteration)
+                if transfer_branch is not None:
+                    torch.save(
+                        {
+                            "iteration": iteration,
+                            "architecture": transfer_args.transfer_arch,
+                            "architecture_code": ARCHITECTURE_CODES[
+                                transfer_args.transfer_arch
+                            ],
+                            "decoder": transfer_branch.decoder.state_dict(),
+                            "optimizer": transfer_optimizer.state_dict(),
+                        },
+                        os.path.join(
+                            scene.model_path,
+                            f"ddn_transfer_{transfer_args.transfer_arch}_{iteration}.pth",
+                        ),
+                    )
+
+            # Densification
+            if iteration < opt.densify_until_iter and not feature_mode:
+                # Keep track of max radii in image-space for pruning
+                gaussians.max_radii2D[visibility_filter] = torch.max(gaussians.max_radii2D[visibility_filter], radii[visibility_filter])
+                # gaussians.add_densification_stats(viewspace_point_tensor, visibility_filter)
+                gaussians.add_densification_stats(viewspace_point_tensor, visibility_filter, feature_map.shape[2], feature_map.shape[1])
+                
+                if iteration > opt.densify_from_iter and iteration % opt.densification_interval == 0:
+                    size_threshold = 20 if iteration > opt.opacity_reset_interval else None
+                    gaussians.densify_and_prune(opt.densify_grad_threshold, 0.005, scene.cameras_extent, size_threshold) # 增删高斯
+                
+                if iteration % opt.opacity_reset_interval == 0 or (dataset.white_background and iteration == opt.densify_from_iter):
+                    gaussians.reset_opacity() 
+                    
+            # Optimizer step
+            if iteration < opt.iterations:
+                Debug_flag = False
+                if Debug_flag:
+                    import ipdb
+                    ipdb.set_trace()
+                # exit()
+
+                gaussians.optimizer.step()
+                gaussians.optimizer.zero_grad(set_to_none = True)
+                if transfer_optimizer is not None:
+                    transfer_optimizer.step()
+                    transfer_optimizer.zero_grad(set_to_none=True)
+                
+                
+            if (iteration in checkpoint_iterations):
+                print("\n[ITER {}] Saving Checkpoint".format(iteration))
+                torch.save((gaussians.capture(), iteration), scene.model_path + "/chkpnt" + str(iteration) + ".pth")
+                if transfer_branch is not None:
+                    torch.save(
+                        {
+                            "iteration": iteration,
+                            "architecture": transfer_args.transfer_arch,
+                            "architecture_code": ARCHITECTURE_CODES[
+                                transfer_args.transfer_arch
+                            ],
+                            "decoder": transfer_branch.decoder.state_dict(),
+                            "optimizer": transfer_optimizer.state_dict(),
+                        },
+                        os.path.join(
+                            scene.model_path,
+                            f"ddn_transfer_{transfer_args.transfer_arch}_checkpoint.pth",
+                        ),
+                    )
+                
+
+def prepare_output_and_logger(args):    
+    if not args.model_path:
+        if os.getenv('OAR_JOB_ID'):
+            unique_str=os.getenv('OAR_JOB_ID')
+        else:
+            unique_str = str(uuid.uuid4())
+        args.model_path = os.path.join("./output/", unique_str[0:10])
+        
+    # Set up output folder
+    print("Output folder: {}".format(args.model_path))
+    os.makedirs(args.model_path, exist_ok = True)
+    with open(os.path.join(args.model_path, "cfg_args"), 'w') as cfg_log_f:
+        cfg_log_f.write(str(Namespace(**vars(args))))
+
+    # Create Tensorboard writer
+    tb_writer = None
+    if TENSORBOARD_FOUND:
+        tb_writer = SummaryWriter(args.model_path)
+    else:
+        print("Tensorboard not available: not logging progress")
+    return tb_writer
+
+
+if __name__ == "__main__":
+    # Set up command line argument parser
+    parser = ArgumentParser(description="Training script parameters")
+    lp = ModelParams(parser) 
+    op = OptimizationParams(parser)
+    pp = PipelineParams(parser)
+    parser.add_argument('--ip', type=str, default="127.0.0.1")
+    parser.add_argument('--port', type=int, default=6009)
+    parser.add_argument('--SAM_level', type=int, default=3)
+    parser.add_argument('--debug_from', type=int, default=-1)
+    parser.add_argument('--detect_anomaly', action='store_true', default=False)
+    parser.add_argument("--test_iterations", nargs="+", type=int, default=[100, 15_000, 30_000])
+    parser.add_argument("--save_iterations", nargs="+", type=int, default=[100, 15_000, 30_000])
+    parser.add_argument("--quiet", action="store_true")
+    parser.add_argument("--checkpoint_iterations", nargs="+", type=int, default=[100, 6000, 15_000, 30_000])
+    parser.add_argument("--start_checkpoint", type=str, default = None)
+    parser.add_argument('--feature_mode', action='store_true', help='use feature replace RGB')
+    parser.add_argument('--sam_ckpt_path', type=str, default="ckpts/sam_vit_h_4b8939.pth")
+    parser.add_argument(
+        "--transfer_arch",
+        choices=["none", *sorted(ARCHITECTURE_CODES)],
+        default="none",
+        help="Fixed DDN subnet structure; weights are reinitialized on COS3D.",
+    )
+    parser.add_argument("--dino_ckpt", type=str, default="checkpoints/dinov2_vits14_pretrain.pth")
+    parser.add_argument("--transfer_channels", type=int, default=256)
+    parser.add_argument("--transfer_lr", type=float, default=2e-4)
+    parser.add_argument("--transfer_weight_decay", type=float, default=1e-4)
+    parser.add_argument("--transfer_contrastive_weight", type=float, default=1.0)
+    parser.add_argument("--transfer_align_weight", type=float, default=0.1)
+    parser.add_argument("--experiment_seed", type=int, default=42)
+    parser.add_argument("--original_iteration", type=int, default=30_000)
+    args = parser.parse_args(sys.argv[1:]) 
+    args.save_iterations.append(args.iterations)
+
+    print("Optimizing " + args.model_path)
+    
+    # Initialize system state (RNG)
+    safe_state(args.quiet)
+    random.seed(args.experiment_seed)
+    np.random.seed(args.experiment_seed)
+    torch.manual_seed(args.experiment_seed)
+    torch.cuda.manual_seed_all(args.experiment_seed)
+
+    scene_name = args.source_path.split("/")[-1]
+    if scene_name == "":
+        scene_name = args.source_path.split("/")[-2]
+    # 
+    # exit()
+
+    GS_original_path = args.original_model_path
+    if not GS_original_path:
+        raise ValueError(
+            "--original_model_path must point to a 3DGS directory containing "
+            "point_cloud/iteration_<original_iteration>/point_cloud.ply"
+        )
+
+
+        
+    # empty cache
+    torch.cuda.empty_cache()
+    # Start GUI server, configure and run training
+    network_gui.init(args.ip, args.port)
+    torch.autograd.set_detect_anomaly(args.detect_anomaly)
+    training(lp.extract(args), op.extract(args), pp.extract(args), 
+             args.test_iterations, args.save_iterations, args.checkpoint_iterations, args.start_checkpoint, 
+             args.debug_from,args.feature_mode, args.SAM_level, GS_original_path, args)
+    # All done
+    print("\nTraining complete.")

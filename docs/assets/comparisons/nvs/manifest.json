@@ -1,0 +1,227 @@
+{
+  "method": "MVSplat (ECCV 2024), official full Re10K checkpoint",
+  "checkpoint_sha256": "83d0d9eaa753fa4a1f925288dc1f90b8c3297fad0ab0f6ed1f11a1c5946da25a",
+  "source_commit": "01f9a28edb5eb68416e7e63b01f8d90c3bdfbf01",
+  "source": "https://github.com/donydchen/mvsplat",
+  "protocol": "Two released 256x256 JPEG input views; camera-to-world poses reconstructed from corresponding saved viewer position/target/up and centered intrinsics from saved square-image FOV. Original full-resolution photographs and camera calibration are not included in the page release. No scene fine-tuning.",
+  "near": 1.0,
+  "far": 100.0,
+  "make_baseline_1": false,
+  "precision": "FP32",
+  "gpu": "NVIDIA GeForce RTX 4090",
+  "torch": "2.6.0+cu124",
+  "display": "Full predicted Gaussian set. Float32 positions/scales; DC-only RGB and 8-bit alpha/quaternion, matching the existing DDN web previews. Same camera and renderer. No geometry filtering or visual enhancement.",
+  "metrics": null,
+  "scenes": [
+    {
+      "scene": "living-room",
+      "gaussians": 131072,
+      "inputs": [
+        {
+          "file": "docs/assets/demos/nvs-0-context-0.jpg",
+          "sha256": "b37e2908d84ba5f9c1514bbb95c2a84182295f5bd9c48c715e4b49531a30681f"
+        },
+        {
+          "file": "docs/assets/demos/nvs-0-context-1.jpg",
+          "sha256": "b7d9075096a80265d19297f3a706a189a626536c3ee0d3eab44346715debc35a"
+        }
+      ],
+      "extrinsics": [
+        [
+          [
+            -0.0036975585389882326,
+            -0.2063530683517456,
+            0.9784706234931946,
+            2.102708578109741
+          ],
+          [
+            -0.9999608993530273,
+            -0.007097973022609949,
+            -0.005275684874504805,
+            -1.1472866535186768
+          ],
+          [
+            0.008033812046051025,
+            -0.9784518480300903,
+            -0.20631875097751617,
+            -1.4609375
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        [
+          [
+            0.25548383593559265,
+            -0.19302278757095337,
+            0.9473490715026855,
+            2.5519912242889404
+          ],
+          [
+            -0.9667516946792603,
+            -0.06206602230668068,
+            0.24807041883468628,
+            -1.6017756462097168
+          ],
+          [
+            0.010914945043623447,
+            -0.9792292714118958,
+            -0.20246197283267975,
+            -1.4623812437057495
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      ],
+      "intrinsics": [
+        [
+          [
+            0.8290062546730042,
+            0.0,
+            0.5
+          ],
+          [
+            0.0,
+            0.8290062546730042,
+            0.5
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        [
+          [
+            0.8290062546730042,
+            0.0,
+            0.5
+          ],
+          [
+            0.0,
+            0.8290062546730042,
+            0.5
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      ],
+      "asset_sha256": "11e3a4ba1b1e86c7b6c6d1d3b3fd464bbef23cd4047199ec05b3818d33fe300b"
+    },
+    {
+      "scene": "garden",
+      "gaussians": 131072,
+      "inputs": [
+        {
+          "file": "docs/assets/demos/nvs-1-context-0.jpg",
+          "sha256": "082fdc64b525c7c0309db8c0b95e3e4c76a93ff5a470e7ac7f4d3ba515a0124f"
+        },
+        {
+          "file": "docs/assets/demos/nvs-1-context-1.jpg",
+          "sha256": "5f02373e429179d4b01cf554d6de6c3e6815a65ba4fe5d193861745f2d8f1961"
+        }
+      ],
+      "extrinsics": [
+        [
+          [
+            -0.15510278940200806,
+            -0.14920836687088013,
+            0.976565420627594,
+            -1.456858515739441
+          ],
+          [
+            -0.9878363013267517,
+            0.03450065106153488,
+            -0.15162156522274017,
+            -0.9072995781898499
+          ],
+          [
+            -0.011068937368690968,
+            -0.9882037043571472,
+            -0.1527445912361145,
+            2.193194627761841
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        [
+          [
+            -0.21288667619228363,
+            -0.13734133541584015,
+            0.967376172542572,
+            -2.44978404045105
+          ],
+          [
+            -0.9770761728286743,
+            0.028711140155792236,
+            -0.21094511449337006,
+            -0.6667686700820923
+          ],
+          [
+            0.0011970129562541842,
+            -0.9901075959205627,
+            -0.14030516147613525,
+            2.1301350593566895
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      ],
+      "intrinsics": [
+        [
+          [
+            0.8280062675476074,
+            0.0,
+            0.5
+          ],
+          [
+            0.0,
+            0.8280062675476074,
+            0.5
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        [
+          [
+            0.8280062675476074,
+            0.0,
+            0.5
+          ],
+          [
+            0.0,
+            0.8280062675476074,
+            0.5
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      ],
+      "asset_sha256": "79f3ac5fab4990ef11a53491dac27028b335c997c633ce3fb36d8b5a63e9c99e"
+    }
+  ]
+}

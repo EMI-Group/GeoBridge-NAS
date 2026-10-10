@@ -1,0 +1,26 @@
+{
+  "scene": "waldo_kitchen",
+  "source_gaussians": 1695015,
+  "display_gaussians": 992585,
+  "queries": [
+    {
+      "label": "pot",
+      "selected": 92585
+    }
+  ],
+  "asset_sha256": "06c62e77d8a976c971a06beacb7e5848e5b3b052438bafcd6f6453556eba289d",
+  "source_commit": "44fc7c88b49a10586c62aeb1ac542aa986863b20",
+  "checkpoint_ply_sha256": "a84d6d839fac4c115c2c4a8fbec052952847cc08e15b36372db7d349fa9b3db8",
+  "clip_sha256": "3f25d29d3cc74e1d25d47e0593b4dd0864ced1e9b4d8e486a247ca4502f227f1",
+  "source_url": "https://github.com/Runsong123/COS3D",
+  "input_views": 187,
+  "language_anchors_sha256": "8fd8ff5aa14a24e22624f8d9a9b0c10a90c9225eb8335ecdec19ef88807a0605",
+  "grouping_distance_sha256": "17b70e756bd74ea44162eb681d0e72c1d0716b9f46c661a0a2c210ea4db26afa",
+  "preprocessing": "SAM ViT-H, original crop and point settings, full-resolution LERF-OVS images, all views; COS3D level-3 masks and OpenCLIP ViT-B-16 laion2b_s34b_b88k. Cached full-level preprocessing and equivalent large-level-only preprocessing. Validation on Teatime frame_00001: identical masks, maximum FP16 CLIP feature difference 0.0009765625.",
+  "anchor_reconstruction": "Official release omits language anchors; rebuilt from checkpoint semantics with gsplat 1.5.3, full camera list, level-3 mask means and global median pixel-feature distance. This is local inference, not a new benchmark evaluation.",
+  "ddn": "Existing published scene and query masks reused without re-inference.",
+  "protocol": "Official COS3D kernel grounding and greedy grouping; exact SciPy KNN with upstream in-place 10000-point smoothing batches; original thresholds; existing DDN queries and cameras; all queried foreground retained plus up to 900000 background Gaussians.",
+  "display_camera": "Shared cameras.js preserves each existing query camera position and FOV, and centers both views on the coordinate-wise median of DDN query foreground centers with opacity above 0.1. Framing does not change either segmentation mask.",
+  "display_cameras_sha256": "70eb1d9c1aeec05be1e295a9db7b083c780b66e2151af971acc96f384d5e476c",
+  "precision": "SAM FP32; early cached full-level frames used TF32 matmul, later large-level-only processing disables TF32 matmul. OpenCLIP FP16; language anchors and grounding FP32."
+}

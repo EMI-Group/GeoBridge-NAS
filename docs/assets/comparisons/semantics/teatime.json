@@ -1,0 +1,34 @@
+{
+  "scene": "teatime",
+  "source_gaussians": 1814906,
+  "display_gaussians": 997279,
+  "queries": [
+    {
+      "label": "sheep",
+      "selected": 31722
+    },
+    {
+      "label": "stuffed bear",
+      "selected": 64182
+    },
+    {
+      "label": "yellow pouf",
+      "selected": 1381
+    }
+  ],
+  "asset_sha256": "c5547bca715ac6dfe7ce76d1881a8fc34f3f1d88c2ae62eeec98a21a282b3834",
+  "source_commit": "44fc7c88b49a10586c62aeb1ac542aa986863b20",
+  "checkpoint_ply_sha256": "2ecba981f78738776ec099022f855c4a63e647eb4d2dc9aa5bb3f5077997134f",
+  "clip_sha256": "3f25d29d3cc74e1d25d47e0593b4dd0864ced1e9b4d8e486a247ca4502f227f1",
+  "source_url": "https://github.com/Runsong123/COS3D",
+  "input_views": 177,
+  "language_anchors_sha256": "5fd71bacad0a83efa1fd826a5fe5f5a39686c687610ea175468d7379c36db2ab",
+  "grouping_distance_sha256": "331ff3843a101aa51b4411bc2af54b2779a8b935b5f5837ad2c93fda1d5ce9e0",
+  "preprocessing": "SAM ViT-H, original crop and point settings, full-resolution LERF-OVS images, all views; COS3D level-3 masks and OpenCLIP ViT-B-16 laion2b_s34b_b88k. Cached full-level preprocessing and equivalent large-level-only preprocessing. Validation on Teatime frame_00001: identical masks, maximum FP16 CLIP feature difference 0.0009765625.",
+  "anchor_reconstruction": "Official release omits language anchors; rebuilt from checkpoint semantics with gsplat 1.5.3, full camera list, level-3 mask means and global median pixel-feature distance. This is local inference, not a new benchmark evaluation.",
+  "ddn": "Existing published scene and query masks reused without re-inference.",
+  "protocol": "Official COS3D kernel grounding and greedy grouping; exact SciPy KNN with upstream in-place 10000-point smoothing batches; original thresholds; existing DDN queries and cameras; all queried foreground retained plus up to 900000 background Gaussians.",
+  "display_camera": "Shared cameras.js preserves each existing query camera position and FOV, and centers both views on the coordinate-wise median of DDN query foreground centers with opacity above 0.1. Framing does not change either segmentation mask.",
+  "display_cameras_sha256": "70eb1d9c1aeec05be1e295a9db7b083c780b66e2151af971acc96f384d5e476c",
+  "precision": "SAM FP32; early cached full-level frames used TF32 matmul, later large-level-only processing disables TF32 matmul. OpenCLIP FP16; language anchors and grounding FP32."
+}

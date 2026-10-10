@@ -1,0 +1,10 @@
+gsplat==1.5.3
+plyfile
+open-clip-torch
+scipy
+scikit-learn
+scikit-image
+Pillow
+opencv-python
+tqdm
+matplotlib

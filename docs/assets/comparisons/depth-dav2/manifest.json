@@ -1,0 +1,82 @@
+{
+  "protocol": "Baseline on decoded RGB left half; existing DDN visualization from the same video frame right half. DDN is not re-inferred. Video compression affects both extracted halves.",
+  "display": "Fixed TURBO 0\u201310 m; depths above 10 m saturate. No per-image normalization.",
+  "baseline": {
+    "name": "Depth Anything V2 Metric Hypersim Small",
+    "encoder": "ViT-S",
+    "source": "https://github.com/DepthAnything/Depth-Anything-V2",
+    "commit": "a561b849ebae10a6f5ef49e26c83cbbcd36c71bf",
+    "checkpoint_sha256": "b782898d8a3e8be1f639de33837ed85e9b4b73e40f8f5e5cd99067588d722545",
+    "precision": "FP32",
+    "input_size": 518,
+    "native_max_depth_m": 20,
+    "training_domain": "Hypersim"
+  },
+  "ddn": {
+    "source": "Existing DDN-A3 video output; settings in CREDITS.md",
+    "raw_depth_available": false
+  },
+  "selection": "All three predefined timestamps per scene are retained.",
+  "metrics": null,
+  "ground_truth": null,
+  "environment": {
+    "torch": "2.6.0+cu124",
+    "gpu": "NVIDIA GeForce RTX 4090"
+  },
+  "samples": [
+    {
+      "id": "meeting_room-0015",
+      "scene": "meeting_room",
+      "frame": 15,
+      "time_seconds": 0.5,
+      "source": "docs/assets/demos/depth-meeting_room.mp4",
+      "source_sha256": "e49d508c1f5a840f2ef572e47c17f29ee0a9fcd5b290ed1d0c2b4abb2dc57759",
+      "input_sha256": "4aa9e8353246805c94e281d535daf44786201f8ea7616f26d1d449dcea340f37"
+    },
+    {
+      "id": "meeting_room-0075",
+      "scene": "meeting_room",
+      "frame": 75,
+      "time_seconds": 2.5,
+      "source": "docs/assets/demos/depth-meeting_room.mp4",
+      "source_sha256": "e49d508c1f5a840f2ef572e47c17f29ee0a9fcd5b290ed1d0c2b4abb2dc57759",
+      "input_sha256": "13ba0c6e526814f83e3daeab22a6aa64d55ed3b6a6a7411a438429e50b017a30"
+    },
+    {
+      "id": "meeting_room-0135",
+      "scene": "meeting_room",
+      "frame": 135,
+      "time_seconds": 4.5,
+      "source": "docs/assets/demos/depth-meeting_room.mp4",
+      "source_sha256": "e49d508c1f5a840f2ef572e47c17f29ee0a9fcd5b290ed1d0c2b4abb2dc57759",
+      "input_sha256": "4e759503d07a41065e8a55efd85a9631271195c333610e01df5e0921e5145633"
+    },
+    {
+      "id": "living_room-0015",
+      "scene": "living_room",
+      "frame": 15,
+      "time_seconds": 0.5005000000000001,
+      "source": "docs/assets/demos/depth-living_room.mp4",
+      "source_sha256": "00c6b46d3faa680bae52f7f836c9d2df65ac3eda7ffc0eb48de793348c9cb923",
+      "input_sha256": "2c7b6b9e20be04f8882eaf2a377d32f8b6e367fc7220fb08241958491de029cd"
+    },
+    {
+      "id": "living_room-0075",
+      "scene": "living_room",
+      "frame": 75,
+      "time_seconds": 2.5025,
+      "source": "docs/assets/demos/depth-living_room.mp4",
+      "source_sha256": "00c6b46d3faa680bae52f7f836c9d2df65ac3eda7ffc0eb48de793348c9cb923",
+      "input_sha256": "6fa044cea26f189c5fecb4ab2e25813c3b0d9b81bbac31b55a4527bb850061ea"
+    },
+    {
+      "id": "living_room-0135",
+      "scene": "living_room",
+      "frame": 135,
+      "time_seconds": 4.5045,
+      "source": "docs/assets/demos/depth-living_room.mp4",
+      "source_sha256": "00c6b46d3faa680bae52f7f836c9d2df65ac3eda7ffc0eb48de793348c9cb923",
+      "input_sha256": "c1be4061f7e6f473b5812c27b5188aed64eab93acea06a89aa508b9b0ac08591"
+    }
+  ]
+}

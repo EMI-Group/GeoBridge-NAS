@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="GeoBridge evolves transferable decoder topologies for depth estimation and Gaussian reconstruction, with downstream open-vocabulary 3D segmentation.">
+<meta name="theme-color" content="#ffffff"><title>GeoBridge: Evolving Transferable Decoder Topologies for Geometric Vision</title>
+<link rel="canonical" href="https://lovelymili.github.io/GeoBridge-NAS/">
+<link rel="icon" href="assets/icon.svg"><link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="comparison.css">
+</head>
+<body>
+<svg width="0" height="0" aria-hidden="true" style="position:absolute"><defs><filter id="mask-color" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0 0 0 0 .325 0 0 0 0 .878 0 0 0 0 .690 1 0 0 0 0"/></filter></defs></svg>
+<a class="skip-link" href="#scene-explorer">Skip to results</a>
+<header class="publication" id="top">
+<div class="publication-container">
+<h1 class="publication-title">GeoBridge: Evolving Transferable Decoder Topologies<br class="desktop-title-break"> for Geometric Vision</h1>
+<div class="publication-authors"><span class="author-block"><span class="publication-author">Rui Wang</span><sup>1</sup></span>, <span class="author-block"><span class="publication-author">Haoyu Zhang</span><sup>1</sup></span>, <span class="author-block"><span class="publication-author">Ran Cheng</span><sup>2</sup></span></div>
+<div class="publication-affiliations"><span class="author-block"><sup>1</sup>Hangzhou Normal University</span> · <span class="author-block"><sup>2</sup>The Hong Kong Polytechnic University</span></div>
+<nav class="publication-links" aria-label="Project resources">
+<!-- Font Awesome Free 5.15.4 by @fontawesome — https://fontawesome.com; icons CC BY 4.0. -->
+<a class="publication-button" href="https://github.com/Lovelymili/GeoBridge-NAS"><span class="publication-button-icon"><svg viewBox="0 0 496 512" aria-hidden="true" focusable="false"><path fill="currentColor" d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span><span>Code</span></a>
+<a class="publication-button" href="#scene-explorer"><span class="publication-button-icon"><svg viewBox="0 0 448 512" aria-hidden="true" focusable="false"><path fill="currentColor" d="M436 480h-20V24c0-13.255-10.745-24-24-24H56C42.745 0 32 10.745 32 24v456H12c-6.627 0-12 5.373-12 12v20h448v-20c0-6.627-5.373-12-12-12zM128 76c0-6.627 5.373-12 12-12h40c6.627 0 12 5.373 12 12v40c0 6.627-5.373 12-12 12h-40c-6.627 0-12-5.373-12-12V76zm0 96c0-6.627 5.373-12 12-12h40c6.627 0 12 5.373 12 12v40c0 6.627-5.373 12-12 12h-40c-6.627 0-12-5.373-12-12v-40zm52 148h-40c-6.627 0-12-5.373-12-12v-40c0-6.627 5.373-12 12-12h40c6.627 0 12 5.373 12 12v40c0 6.627-5.373 12-12 12zm76 160h-64v-84c0-6.627 5.373-12 12-12h40c6.627 0 12 5.373 12 12v84zm64-172c0 6.627-5.373 12-12 12h-40c-6.627 0-12-5.373-12-12v-40c0-6.627 5.373-12 12-12h40c6.627 0 12 5.373 12 12v40zm0-96c0 6.627-5.373 12-12 12h-40c-6.627 0-12-5.373-12-12v-40c0-6.627 5.373-12 12-12h40c6.627 0 12 5.373 12 12v40zm0-96c0 6.627-5.373 12-12 12h-40c-6.627 0-12-5.373-12-12V76c0-6.627 5.373-12 12-12h40c6.627 0 12 5.373 12 12v40z"/></svg></span><span>Interactive Results</span></a>
+<a class="publication-button" href="#method"><span class="publication-button-icon"><svg viewBox="0 0 384 512" aria-hidden="true" focusable="false"><path fill="currentColor" d="M181.9 256.1c-5-16-4.9-46.9-2-46.9 8.4 0 7.6 36.9 2 46.9zm-1.7 47.2c-7.7 20.2-17.3 43.3-28.4 62.7 18.3-7 39-17.2 62.9-21.9-12.7-9.6-24.9-23.4-34.5-40.8zM86.1 428.1c0 .8 13.2-5.4 34.9-40.2-6.7 6.3-29.1 24.5-34.9 40.2zM248 160h136v328c0 13.3-10.7 24-24 24H24c-13.3 0-24-10.7-24-24V24C0 10.7 10.7 0 24 0h200v136c0 13.2 10.8 24 24 24zm-8 171.8c-20-12.2-33.3-29-42.7-53.8 4.5-18.5 11.6-46.6 6.2-64.2-4.7-29.4-42.4-26.5-47.8-6.8-5 18.3-.4 44.1 8.1 77-11.6 27.6-28.7 64.6-40.8 85.8-.1 0-.1.1-.2.1-27.1 13.9-73.6 44.5-54.5 68 5.6 6.9 16 10 21.5 10 17.9 0 35.7-18 61.1-61.8 25.8-8.5 54.1-19.1 79-23.2 21.7 11.8 47.1 19.5 64 19.5 29.2 0 31.2-32 19.7-43.4-13.9-13.6-54.3-9.7-73.6-7.2zM377 105L279 7c-4.5-4.5-10.6-7-17-7h-6v128h128v-6.1c0-6.3-2.5-12.4-7-16.9zm-74.1 255.3c4.1-2.7-2.5-11.9-42.8-9 37.1 15.8 42.8 9 42.8 9z"/></svg></span><span>Method</span></a>
+<a class="publication-button" href="https://huggingface.co/kujimili/GeoBridge-NAS"><span class="publication-button-icon"><svg viewBox="0 0 512 512" aria-hidden="true" focusable="false"><path fill="currentColor" d="M216 0h80c13.3 0 24 10.7 24 24v168h87.7c17.8 0 26.7 21.5 14.1 34.1L269.7 378.3c-7.5 7.5-19.8 7.5-27.3 0L90.1 226.1c-12.6-12.6-3.7-34.1 14.1-34.1H192V24c0-13.3 10.7-24 24-24zm296 376v112c0 13.3-10.7 24-24 24H24c-13.3 0-24-10.7-24-24V376c0-13.3 10.7-24 24-24h146.7l49 49c20.1 20.1 52.5 20.1 72.6 0l49-49H488c13.3 0 24 10.7 24 24zm-124 88c0-11-9-20-20-20s-20 9-20 20 9 20 20 20 20-9 20-20zm64 0c0-11-9-20-20-20s-20 9-20 20 9 20 20 20 20-9 20-20z"/></svg></span><span>Models</span></a>
+</nav>
+<p class="publication-summary">Evolve once. Reuse decoder topologies across geometric vision systems. GeoBridge searches stage-internal computation and transfers the selected structures to depth estimation and Gaussian reconstruction, with weights and prediction interfaces trained for each target system.</p>
+</div>
+</header>
+<section class="hero-teasers" aria-label="GeoBridgeNet-A3 results at a glance">
+<figure>
+<div class="hero-film"><video id="hero-nvs" muted loop playsinline preload="none" poster="assets/demos/hero-nvs.jpg" aria-label="GeoBridgeNet-A3 Gaussian scene viewed along a continuous camera path"><source src="assets/demos/hero-nvs.mp4" type="video/mp4"></video><button type="button" class="hero-toggle" data-hero-video="hero-nvs" aria-label="Pause novel-view animation">Pause</button></div>
+<figcaption>GeoBridgeNet-A3 · Novel view synthesis</figcaption>
+</figure>
+<figure>
+<div class="hero-film"><video id="hero-semantics" muted loop playsinline preload="none" poster="assets/demos/hero-semantics.jpg" aria-label="GeoBridgeNet-A3 Teatime scene, highlighting and isolating the sheep in 3D"><source src="assets/demos/hero-semantics.mp4" type="video/mp4"></video><button type="button" class="hero-toggle" data-hero-video="hero-semantics" aria-label="Pause 3D segmentation animation">Pause</button></div>
+<figcaption>GeoBridgeNet-A3 · Open-vocabulary 3D segmentation</figcaption>
+</figure>
+<figure class="hero-depth">
+<div class="hero-film"><video id="hero-depth-indoor" muted loop playsinline preload="none" poster="assets/demos/hero-depth-indoor.jpg" aria-label="Our meeting room: continuous input video and GeoBridgeNet-A3 indoor depth prediction"><source src="assets/demos/hero-depth-indoor.mp4" type="video/mp4"></video><button type="button" class="hero-toggle" data-hero-video="hero-depth-indoor" aria-label="Pause indoor depth animation">Pause</button></div>
+<figcaption>GeoBridgeNet-A3 · Indoor depth — Our meeting room</figcaption>
+</figure>
+<figure class="hero-depth">
+<div class="hero-film"><video id="hero-depth-outdoor" muted loop playsinline preload="none" poster="assets/demos/hero-depth-outdoor.jpg" aria-label="KITTI street drive: continuous input video and GeoBridgeNet-A3 outdoor depth prediction"><source src="assets/demos/hero-depth-outdoor.mp4" type="video/mp4"></video><button type="button" class="hero-toggle" data-hero-video="hero-depth-outdoor" aria-label="Pause outdoor depth animation">Pause</button></div>
+<figcaption>GeoBridgeNet-A3 · Outdoor depth — KITTI</figcaption>
+</figure>
+</section>
+<main>
+<section class="content interactive-section" id="scene-explorer">
+<h2>3D Reconstruction — Side-by-Side Comparison</h2>
+<p>Compare <a href="https://github.com/donydchen/mvsplat">MVSplat · ECCV 2024</a> with GeoBridgeNet-A3 on two ETH3D scenes. The cameras are linked: rotate, pan or zoom either view to inspect the same region in both reconstructions.</p>
+<div class="instructions" aria-label="Mouse controls">
+<div class="instruction-item"><svg class="mouse-icon" viewBox="0 0 36 36" aria-hidden="true"><rect x="9" y="5" width="18" height="28" rx="9"/><path d="M9 17h18M18 5v12"/><rect class="mouse-part left" x="11" y="7" width="6" height="8" rx="2"/></svg><span>Drag with <em>left</em> click to <strong>rotate</strong> view</span></div>
+<div class="instruction-item"><svg class="mouse-icon" viewBox="0 0 36 36" aria-hidden="true"><rect x="10" y="9" width="16" height="21" rx="8"/><path d="M18 3v5m-3-3 3-3 3 3M18 31v3m-3-2 3 3 3-3"/><rect class="mouse-part" x="16" y="12" width="4" height="7" rx="2"/></svg><span>Scroll to <strong>zoom</strong> in/out</span></div>
+<div class="instruction-item"><svg class="mouse-icon" viewBox="0 0 36 36" aria-hidden="true"><rect x="9" y="5" width="18" height="28" rx="9"/><path d="M9 17h18M18 5v12"/><rect class="mouse-part right" x="19" y="7" width="6" height="8" rx="2"/></svg><span>Drag with <em>right</em> click to <strong>move</strong> view</span></div>
+</div><div class="instructions-small" aria-label="Keyboard controls; click a scene first">
+<div class="instruction-item-small"><kbd>W</kbd><kbd>S</kbd><span>Moving forward and backward</span></div>
+<div class="instruction-item-small"><kbd>A</kbd><kbd>D</kbd><span>Moving left and right</span></div>
+<div class="instruction-item-small"><kbd>Q</kbd><kbd>E</kbd><span>Moving upward and downward</span></div>
+</div>
+<div class="choices nvs-scene-choices" role="group" aria-label="Choose 3D comparison scene"><button type="button" data-nvs-compare="living-room" aria-pressed="true">Living room</button><button type="button" data-nvs-compare="garden" aria-pressed="false">Botanical garden</button></div>
+<p class="render-note">Same two input views · Linked cameras · No scene fine-tuning</p>
+<div class="scene-grid nvs-compare-panel" data-nvs-compare-panel="living-room"><article class="gaussian-viewer" id="nvs-living-mvsplat" data-gaussian-viewer="living-room-mvsplat" data-sync-group="living-room" data-lazy aria-label="Living room: MVSplat reconstruction">
+<div class="scene-window"><div class="scene-canvas" tabindex="0" role="application" aria-label="Living room MVSplat: drag to rotate both views"></div>
+<div class="scene-toolbar"><span class="scene-label">Living room</span><span>MVSplat · ECCV 2024</span></div>
+<div class="scene-buttons choices"><button type="button" data-reset>Reset view</button><button type="button" data-fullscreen>Full screen</button></div></div>
+<div class="scene-status" role="status" aria-live="polite">Loading MVSplat reconstruction…</div></article>
+<article class="gaussian-viewer compare-ours-3d" id="nvs-living" data-gaussian-viewer="living-room" data-sync-group="living-room" data-lazy aria-label="Living room: GeoBridgeNet-A3 reconstruction">
+<div class="scene-window"><div class="scene-canvas" tabindex="0" role="application" aria-label="Living room: drag to rotate, right-drag to move, scroll to zoom; W S A D Q E to move"></div>
+<div class="scene-toolbar"><span class="scene-label">Living room</span><span>GeoBridgeNet-A3</span></div>
+<div class="scene-buttons choices"><button type="button" data-reset>Reset view</button><button type="button" data-fullscreen>Full screen</button></div></div>
+<div class="scene-status" role="status" aria-live="polite">Loading interactive 3D scene…</div>
+</article></div>
+<div class="scene-grid nvs-compare-panel" data-nvs-compare-panel="garden" hidden><article class="gaussian-viewer" id="nvs-garden-mvsplat" data-gaussian-viewer="garden-mvsplat" data-sync-group="garden" data-lazy aria-label="Botanical garden: MVSplat reconstruction">
+<div class="scene-window"><div class="scene-canvas" tabindex="0" role="application" aria-label="Botanical garden MVSplat: drag to rotate both views"></div>
+<div class="scene-toolbar"><span class="scene-label">Botanical garden</span><span>MVSplat · ECCV 2024</span></div>
+<div class="scene-buttons choices"><button type="button" data-reset>Reset view</button><button type="button" data-fullscreen>Full screen</button></div></div>
+<div class="scene-status" role="status" aria-live="polite">Loading MVSplat reconstruction…</div></article>
+<article class="gaussian-viewer compare-ours-3d" id="nvs-garden" data-gaussian-viewer="garden" data-sync-group="garden" data-lazy aria-label="Botanical garden: GeoBridgeNet-A3 reconstruction">
+<div class="scene-window"><div class="scene-canvas" tabindex="0" role="application" aria-label="Botanical garden: drag to rotate, right-drag to move, scroll to zoom; W S A D Q E to move"></div>
+<div class="scene-toolbar"><span class="scene-label">Botanical garden</span><span>GeoBridgeNet-A3</span></div>
+<div class="scene-buttons choices"><button type="button" data-reset>Reset view</button><button type="button" data-fullscreen>Full screen</button></div></div>
+<div class="scene-status" role="status" aria-live="polite">Loading interactive 3D scene…</div>
+</article></div>
+<p class="caption">Full predicted Gaussian sets, shown with the same compact renderer. <a href="assets/comparisons/nvs/manifest.json">Comparison protocol</a> · <a href="#views">Input views and GeoBridgeNet videos ↓</a></p>
+</section>
+<section class="content interactive-section" id="grounding">
+<h2>Open-Vocabulary Segmentation in 3D</h2>
+<p>Compare the official <a href="https://github.com/Runsong123/COS3D">COS3D · NeurIPS 2025</a> scene checkpoint with GeoBridgeNet-A3 initialization + COS3D. Select the same text query and inspect both results with linked cameras.</p>
+<div class="instructions" aria-label="Mouse controls">
+<div class="instruction-item"><svg class="mouse-icon" viewBox="0 0 36 36" aria-hidden="true"><rect x="9" y="5" width="18" height="28" rx="9"/><path d="M9 17h18M18 5v12"/><rect class="mouse-part left" x="11" y="7" width="6" height="8" rx="2"/></svg><span>Drag with <em>left</em> click to <strong>rotate</strong> view</span></div>
+<div class="instruction-item"><svg class="mouse-icon" viewBox="0 0 36 36" aria-hidden="true"><rect x="10" y="9" width="16" height="21" rx="8"/><path d="M18 3v5m-3-3 3-3 3 3M18 31v3m-3-2 3 3 3-3"/><rect class="mouse-part" x="16" y="12" width="4" height="7" rx="2"/></svg><span>Scroll to <strong>zoom</strong> in/out</span></div>
+<div class="instruction-item"><svg class="mouse-icon" viewBox="0 0 36 36" aria-hidden="true"><rect x="9" y="5" width="18" height="28" rx="9"/><path d="M9 17h18M18 5v12"/><rect class="mouse-part right" x="19" y="7" width="6" height="8" rx="2"/></svg><span>Drag with <em>right</em> click to <strong>move</strong> view</span></div>
+</div><div class="instructions-small" aria-label="Keyboard controls; click a scene first">
+<div class="instruction-item-small"><kbd>W</kbd><kbd>S</kbd><span>Moving forward and backward</span></div>
+<div class="instruction-item-small"><kbd>A</kbd><kbd>D</kbd><span>Moving left and right</span></div>
+<div class="instruction-item-small"><kbd>Q</kbd><kbd>E</kbd><span>Moving upward and downward</span></div>
+</div>
+<p class="render-note">(All queried foreground Gaussians are retained; backgrounds are sampled for online rendering)</p>
+<div class="choices nvs-scene-choices" role="group" aria-label="Choose semantic comparison scene"><button type="button" data-semantic-scene="waldo_kitchen" aria-pressed="true">Waldo Kitchen</button><button type="button" data-semantic-scene="teatime" aria-pressed="false">Teatime</button></div>
+<div class="scene-grid nvs-compare-panel" data-semantic-panel="teatime" hidden><article class="gaussian-viewer semantic-viewer" id="semantic-teatime-cos3d" data-semantic-compare="true" data-sync-group="semantic-teatime" data-gaussian-viewer="teatime-cos3d" data-lazy aria-label="Teatime: interactive semantic segmentation">
+<div class="scene-window"><div class="scene-canvas" tabindex="0" role="application" aria-label="Teatime: drag to rotate, right-drag to move, scroll to zoom; W S A D Q E to move"></div>
+<div class="scene-toolbar"><span class="scene-label">Teatime</span><span>COS3D · NeurIPS 2025</span></div>
+<div class="scene-buttons choices"><button type="button" data-reset>Reset view</button><button type="button" data-fullscreen>Full screen</button></div></div>
+<div class="scene-status" role="status" aria-live="polite">Loading interactive 3D scene…</div><div class="semantic-controls"><span class="query-label">Text query</span><div class="choices semantic-queries" aria-label="3D text queries"></div><div class="choices display-modes" aria-label="Segmentation display"><button type="button" data-display="rgb" aria-pressed="true">Original scene</button><button type="button" data-display="highlight" aria-pressed="false">Highlight</button><button type="button" data-display="isolate" aria-pressed="false">Object only</button></div></div>
+</article><article class="gaussian-viewer semantic-viewer compare-ours-3d" id="semantic-teatime" data-semantic-compare="true" data-sync-group="semantic-teatime" data-gaussian-viewer="teatime" data-lazy aria-label="Teatime: interactive semantic segmentation">
+<div class="scene-window"><div class="scene-canvas" tabindex="0" role="application" aria-label="Teatime: drag to rotate, right-drag to move, scroll to zoom; W S A D Q E to move"></div>
+<div class="scene-toolbar"><span class="scene-label">Teatime</span><span>GeoBridgeNet-A3 init. + COS3D</span></div>
+<div class="scene-buttons choices"><button type="button" data-reset>Reset view</button><button type="button" data-fullscreen>Full screen</button></div></div>
+<div class="scene-status" role="status" aria-live="polite">Loading interactive 3D scene…</div><div class="semantic-controls"><span class="query-label">Text query</span><div class="choices semantic-queries" aria-label="3D text queries"></div><div class="choices display-modes" aria-label="Segmentation display"><button type="button" data-display="rgb" aria-pressed="true">Original scene</button><button type="button" data-display="highlight" aria-pressed="false">Highlight</button><button type="button" data-display="isolate" aria-pressed="false">Object only</button></div></div>
+</article></div>
+<div class="scene-grid nvs-compare-panel" data-semantic-panel="waldo_kitchen"><article class="gaussian-viewer semantic-viewer" id="semantic-kitchen-cos3d" data-semantic-compare="true" data-sync-group="semantic-waldo_kitchen" data-gaussian-viewer="waldo_kitchen-cos3d" data-lazy aria-label="Waldo Kitchen: interactive semantic segmentation">
+<div class="scene-window"><div class="scene-canvas" tabindex="0" role="application" aria-label="Waldo Kitchen: drag to rotate, right-drag to move, scroll to zoom; W S A D Q E to move"></div>
+<div class="scene-toolbar"><span class="scene-label">Waldo Kitchen</span><span>COS3D · NeurIPS 2025</span></div>
+<div class="scene-buttons choices"><button type="button" data-reset>Reset view</button><button type="button" data-fullscreen>Full screen</button></div></div>
+<div class="scene-status" role="status" aria-live="polite">Loading interactive 3D scene…</div><div class="semantic-controls"><span class="query-label">Text query</span><div class="choices semantic-queries" aria-label="3D text queries"></div><div class="choices display-modes" aria-label="Segmentation display"><button type="button" data-display="rgb" aria-pressed="true">Original scene</button><button type="button" data-display="highlight" aria-pressed="false">Highlight</button><button type="button" data-display="isolate" aria-pressed="false">Object only</button></div></div>
+</article><article class="gaussian-viewer semantic-viewer compare-ours-3d" id="semantic-kitchen" data-semantic-compare="true" data-sync-group="semantic-waldo_kitchen" data-gaussian-viewer="waldo_kitchen" data-lazy aria-label="Waldo Kitchen: interactive semantic segmentation">
+<div class="scene-window"><div class="scene-canvas" tabindex="0" role="application" aria-label="Waldo Kitchen: drag to rotate, right-drag to move, scroll to zoom; W S A D Q E to move"></div>
+<div class="scene-toolbar"><span class="scene-label">Waldo Kitchen</span><span>GeoBridgeNet-A3 init. + COS3D</span></div>
+<div class="scene-buttons choices"><button type="button" data-reset>Reset view</button><button type="button" data-fullscreen>Full screen</button></div></div>
+<div class="scene-status" role="status" aria-live="polite">Loading interactive 3D scene…</div><div class="semantic-controls"><span class="query-label">Text query</span><div class="choices semantic-queries" aria-label="3D text queries"></div><div class="choices display-modes" aria-label="Segmentation display"><button type="button" data-display="rgb" aria-pressed="true">Original scene</button><button type="button" data-display="highlight" aria-pressed="false">Highlight</button><button type="button" data-display="isolate" aria-pressed="false">Object only</button></div></div>
+</article></div>
+<p class="caption">Same text queries · Linked cameras and display modes · Official COS3D checkpoint. <a href="assets/comparisons/semantics/teatime.json">Teatime protocol</a> · <a href="assets/comparisons/semantics/waldo_kitchen.json">Kitchen protocol</a></p>
+<details><summary>GeoBridgeNet-A3 image-space results <span>＋</span></summary>
+<div class="viewer">
+<div class="viewer-toolbar"><span class="scene-name" id="scene-name">Teatime</span><span class="viewer-mode">GeoBridgeNet-A3 results</span></div>
+<div class="comparison" id="comparison" style="--split:48%">
+<img id="scene-image" src="assets/grounding/sheep-reference.jpg" width="988" height="730" alt="Reference view of the Teatime scene">
+<div class="prediction-side"><img class="predicted-mask" id="predicted-mask" src="assets/grounding/sheep-mask.png" alt="GeoBridgeNet-A3 predicted semantic mask"></div>
+<div class="image-label left-label">Input RGB</div><div class="image-label right-label">GeoBridgeNet-A3 mask overlay</div>
+<div class="divider" aria-hidden="true"><span>‹ ›</span></div>
+<input id="reveal" type="range" min="0" max="100" value="48" aria-label="Reveal predicted semantic mask">
+</div>
+<div class="query-bar"><span class="query-label">Try a query</span><div class="query-options" role="group" aria-label="Semantic queries"><button type="button" data-query="sheep" aria-pressed="true">“sheep”</button><button type="button" data-query="bear" aria-pressed="false">“stuffed bear”</button><button type="button" data-query="pouf" aria-pressed="false">“yellow pouf”</button><button type="button" data-query="pot" aria-pressed="false">“pot”</button></div></div>
+</div>
+
+
+<p class="caption">Reference RGB with the GeoBridgeNet-A3 segmentation overlay.</p>
+</details>
+</section>
+<section class="content" id="method">
+<h2>Abstract</h2>
+<p class="abstract"><strong>GeoBridge</strong> is an evolutionary framework for transferable decoder topologies. Residual, sequential, and parallel composition make stage-internal computation searchable while preserving the interfaces of a fixed multi-scale scaffold. Functional trees support stage-aware crossover and hierarchical mutation; NSGA-II balances a training-free gradient sensitivity-alignment proxy (<strong>GSAP</strong>) with computation and parameter cost. The selected <strong>GeoBridgeNet-A1/A2/A3</strong> structures are reused for monocular depth estimation and Gaussian novel-view synthesis with task-specific training. Their reconstructed scenes also support open-vocabulary segmentation through COS3D refinement.</p>
+<h2 class="subsection">From Decoder Search to 2D and 3D Geometry</h2>
+<img class="overview" src="assets/readme/geobridge-overview.png" loading="lazy" alt="GeoBridge: tree-aware evolution with GSAP and decoder topology transfer to geometric vision systems">
+<p class="caption">The decoder topology is shared across tasks; trained weights and task-specific modules are separate.</p>
+<details><summary>Decoder architecture <span>＋</span></summary><img src="assets/readme/geobridge-decoder.png" loading="lazy" alt="Multiscale GeoBridgeNet decoder architecture"></details>
+</section>
+<section class="content" id="depth">
+<h2>Results — Monocular Depth Estimation</h2>
+<p>NYU Depth V2 and KITTI test the searched decoder across indoor and outdoor geometry. A1–A3 offer increasing model capacity, with A3 giving the best depth accuracy within the GeoBridgeNet family.</p>
+<div class="media-shell"><div class="pair-labels"><span>Input video</span><span>Predicted depth <small class="scale">0 m <i></i> 10 m</small></span></div><video id="depth-video" controls muted loop playsinline preload="none" poster="assets/demos/depth-meeting_room.jpg" aria-label="Continuous meeting-room footage alongside GeoBridgeNet-A3 depth predictions"><source src="assets/demos/depth-meeting_room.mp4" type="video/mp4"></video></div>
+<div class="below"><div class="choices" aria-label="Choose depth example"><button data-depth="meeting_room" aria-pressed="true">Our meeting room</button><button data-depth="living_room" aria-pressed="false">Living room</button></div><span id="depth-credit" class="note">Footage: Rui Wang · Hangzhou Normal University</span></div>
+
+<div id="depth-comparison" class="depth-comparison" hidden>
+<div class="compare-heading"><div><span class="compare-eyebrow">SAME INPUT · FIXED METRIC SCALE</span><h3>Depth, side by side</h3></div><a href="assets/comparisons/depth-dav2/manifest.json">Inference details ↗</a></div>
+<p class="compare-intro">Compare GeoBridgeNet-A3 with <a href="https://github.com/DepthAnything/Depth-Anything-V2">Depth Anything V2 Small · NeurIPS 2024</a> on the same indoor frames.</p>
+<div class="compare-controls"><div class="choices" role="group" aria-label="Comparison scene"><button type="button" data-compare-scene="meeting_room" aria-pressed="true">Our meeting room</button><button type="button" data-compare-scene="living_room" aria-pressed="false">Living room</button></div></div>
+<div class="compare-grid">
+<figure><figcaption><strong>Input RGB</strong><span>Shared input</span></figcaption><div class="compare-image"><img data-compare-image="rgb" alt="Shared RGB input" width="640" height="480"></div></figure>
+<figure><figcaption><strong>Depth Anything V2</strong><span>Small · 2024</span></figcaption><div class="compare-image"><img data-compare-image="dav2" alt="Depth Anything V2 metric depth" width="640" height="480"></div></figure>
+<figure class="compare-ours"><figcaption><strong>GeoBridgeNet-A3</strong><span>Ours</span></figcaption><div class="compare-image"><img data-compare-image="ddn" alt="GeoBridgeNet-A3 metric depth" width="640" height="480"></div></figure>
+</div>
+<div class="compare-footer"><label class="compare-zoom"><input id="compare-zoom" type="checkbox"> 2× detail <span>Move over an image to inspect the same region.</span></label><span class="compare-scale">0 m <i aria-hidden="true"></i> 10 m</span></div>
+<p id="compare-status" class="table-note" role="status" aria-live="polite"></p>
+</div>
+<div class="dataset-tabs" role="group" aria-label="Choose depth benchmark"><button type="button" data-benchmark="nyu" aria-pressed="true">NYU Depth V2</button><button type="button" data-benchmark="kitti" aria-pressed="false">KITTI</button></div>
+<div data-benchmark-panel="nyu"><div class="table-scroll" role="region" tabindex="0" aria-label="NYU Depth V2 · 0–10 m"><table id="table-nyu"><caption>NYU Depth V2 · 0–10 m</caption><thead><tr><th scope="col">Method</th><th scope="col">AbsRel ↓</th><th scope="col">RMSE ↓</th><th scope="col">δ<sub>1</sub> ↑</th><th scope="col">Params (M) ↓</th></tr></thead><tbody><tr><th scope="row">AdaBins</th><td>0.103</td><td>0.364</td><td>0.903</td><td>78.3</td></tr>
+<tr><th scope="row">iDisc (Swin-L)</th><td>0.086</td><td>0.313</td><td>0.940</td><td>—</td></tr>
+<tr><th scope="row">IEBins (Swin-L)</th><td>0.087</td><td>0.314</td><td>0.936</td><td>273.0</td></tr>
+<tr><th scope="row">NeWCRFs</th><td>0.095</td><td>0.334</td><td>0.922</td><td>270.4</td></tr>
+<tr><th scope="row">PixelFormer</th><td>0.090</td><td>0.322</td><td>0.929</td><td>270.9</td></tr>
+<tr class="ours"><th scope="row">GeoBridgeNet-A1</th><td>0.0918</td><td>0.3252</td><td>0.9315</td><td>32.9</td></tr>
+<tr class="ours"><th scope="row">GeoBridgeNet-A2</th><td>0.0895</td><td>0.3207</td><td>0.9331</td><td>34.0</td></tr>
+<tr class="ours"><th scope="row">GeoBridgeNet-A3</th><td>0.0876</td><td>0.3134</td><td>0.9364</td><td>42.5</td></tr>
+</tbody></table></div><p class="table-note">Selected comparisons from the current manuscript. Parameter counts cover the full model.</p><a class="figure-link" href="assets/figure-5.png" target="_blank" rel="noopener"><img src="assets/figure-5.png" loading="lazy" alt="NYU qualitative comparison: RGB, reference depth and predictions from multiple methods"></a><p class="caption">Indoor depth: furniture boundaries, small objects and changes in wall depth.</p></div>
+<div data-benchmark-panel="kitti" hidden><div class="table-scroll" role="region" tabindex="0" aria-label="KITTI Eigen split · 0–80 m"><table id="table-kitti"><caption>KITTI Eigen split · 0–80 m</caption><thead><tr><th scope="col">Method</th><th scope="col">AbsRel ↓</th><th scope="col">RMSE ↓</th><th scope="col">δ<sub>1</sub> ↑</th><th scope="col">Params (M) ↓</th></tr></thead><tbody><tr><th scope="row">AdaBins</th><td>0.058</td><td>2.360</td><td>0.964</td><td>78.3</td></tr>
+<tr><th scope="row">iDisc (Swin-L)</th><td>0.050</td><td>2.067</td><td>0.977</td><td>—</td></tr>
+<tr><th scope="row">IEBins (Swin-L)</th><td>0.050</td><td>2.011</td><td>0.978</td><td>273.0</td></tr>
+<tr><th scope="row">NeWCRFs</th><td>0.052</td><td>2.129</td><td>0.974</td><td>270.4</td></tr>
+<tr><th scope="row">PixelFormer</th><td>0.051</td><td>2.081</td><td>0.976</td><td>270.9</td></tr>
+<tr class="ours"><th scope="row">GeoBridgeNet-A1</th><td>0.0582</td><td>2.2411</td><td>0.9694</td><td>32.9</td></tr>
+<tr class="ours"><th scope="row">GeoBridgeNet-A2</th><td>0.0561</td><td>2.2153</td><td>0.9702</td><td>34.0</td></tr>
+<tr class="ours"><th scope="row">GeoBridgeNet-A3</th><td>0.0555</td><td>2.1993</td><td>0.9719</td><td>42.5</td></tr>
+</tbody></table></div><p class="table-note">Selected comparisons from the current manuscript. Parameter counts cover the full model.</p><a class="figure-link" href="assets/figure-6.png" target="_blank" rel="noopener"><img src="assets/figure-6.png" loading="lazy" alt="KITTI qualitative comparison of outdoor depth predictions"></a><p class="caption">Outdoor depth: road structure, vehicles and foreground boundaries.</p></div>
+
+</section>
+<section class="content" id="views">
+<h2>Results — Novel View Synthesis</h2>
+<p>The same decoder topology is trained inside a Gaussian novel-view pipeline. Below, two calibrated ETH3D views produce a continuous rendered camera path using the Re10K-trained A3 model, without scene fine-tuning.</p>
+<div class="nvs-stage"><div class="contexts"><figure><img id="context-0" src="assets/demos/nvs-0-context-0.jpg" alt="First input view"><figcaption>Input 1</figcaption></figure><figure><img id="context-1" src="assets/demos/nvs-0-context-1.jpg" alt="Second input view"><figcaption>Input 2</figcaption></figure></div><div class="render"><div class="render-title">GeoBridgeNet-A3 · rendered novel views <span>→</span></div><video id="nvs-video" controls muted loop playsinline preload="none" poster="assets/demos/nvs-0.jpg" aria-label="Continuous novel camera trajectory rendered by GeoBridgeNet-A3"><source src="assets/demos/nvs-0.mp4" type="video/mp4"></video></div></div>
+<div class="below"><div class="choices" aria-label="Choose novel view example"><button data-nvs="0" aria-pressed="true">Living room</button><button data-nvs="1" aria-pressed="false">Garden</button></div><span class="note">ETH3D · no scene fine-tuning</span></div>
+<details><summary>Compare with a held-out captured view <span>＋</span></summary><div class="pair-labels"><span>GeoBridgeNet-A3 prediction</span><span>Captured reference</span></div><img id="nvs-target" src="assets/demos/nvs-0-target.jpg" alt="GeoBridgeNet-A3 novel-view prediction beside the held-out captured reference"></details>
+
+<h3>Quantitative comparison on RealEstate10K</h3>
+<div class="table-scroll" role="region" tabindex="0" aria-label="RealEstate10K · novel-view synthesis"><table id="table-nvs"><caption>RealEstate10K · novel-view synthesis</caption><thead><tr><th scope="col">Method</th><th scope="col">PSNR ↑</th><th scope="col">SSIM ↑</th><th scope="col">LPIPS ↓</th><th scope="col">Params ↓</th></tr></thead><tbody><tr><th scope="row">pixelNeRF</th><td>20.43</td><td>0.589</td><td>0.550</td><td>—</td></tr>
+<tr><th scope="row">pixelSplat</th><td>25.89</td><td>0.858</td><td>0.142</td><td>119M</td></tr>
+<tr><th scope="row">MVSplat</th><td>26.39</td><td>0.869</td><td>0.128</td><td>12M</td></tr>
+<tr><th scope="row">DepthSplat</th><td>27.47</td><td>0.889</td><td>0.114</td><td>354M</td></tr>
+<tr class="ours"><th scope="row">GeoBridgeNet-A1</th><td>27.02</td><td>0.879</td><td>0.119</td><td>52.4M</td></tr>
+<tr class="ours"><th scope="row">GeoBridgeNet-A2</th><td>27.07</td><td>0.881</td><td>0.118</td><td>53.5M</td></tr>
+<tr class="ours"><th scope="row">GeoBridgeNet-A3</th><td>27.11</td><td>0.878</td><td>0.121</td><td>62.0M</td></tr>
+</tbody></table></div>
+<p class="table-note">Current manuscript values. Baselines are source-reported reference results; parameters cover the complete feed-forward pipeline.</p>
+<p>GeoBridgeNet-A3 has the highest PSNR within the GeoBridgeNet family, while A2 gives the best SSIM and LPIPS. The variants retain separate reconstruction quality and model-size trade-offs.</p>
+<details><summary>Qualitative comparisons on RealEstate10K <span>＋</span></summary><img src="assets/figure-7.png" loading="lazy" alt="RealEstate10K novel-view synthesis comparison from the manuscript"></details>
+</section>
+<section class="content" id="semantics">
+<h2>Results — 3D Semantic Grounding</h2>
+<p>GeoBridgeNet-initialized Gaussians are refined and passed to the COS3D semantic pipeline. Evaluation covers Figurines, Teatime, Ramen and Waldo Kitchen, using the same downstream protocol for all three GeoBridgeNet variants.</p>
+<div class="table-scroll" role="region" tabindex="0" aria-label="LERF · mean over four scenes"><table id="table-semantic"><caption>LERF · mean over four scenes</caption><thead><tr><th scope="col">Method</th><th scope="col">mIoU (%) ↑</th><th scope="col">mAcc (%) ↑</th></tr></thead><tbody><tr><th scope="row">COS3D (shallow MLPs)</th><td>49.75</td><td>70.60</td></tr>
+<tr><th scope="row">COS3D (kernel regression)</th><td>50.76</td><td>72.08</td></tr>
+<tr><th scope="row">OpenGaussian · NeurIPS 2024</th><td>38.36</td><td>51.43</td></tr>
+<tr><th scope="row">Dr. Splat · CVPR 2025</th><td>43.58</td><td>63.87</td></tr>
+<tr><th scope="row">InstanceGaussian · CVPR 2025</th><td>45.30</td><td>58.44</td></tr>
+<tr class="ours"><th scope="row">GeoBridgeNet-A1 init. + COS3D</th><td>51.06</td><td>70.58</td></tr>
+<tr class="ours"><th scope="row">GeoBridgeNet-A2 init. + COS3D</th><td>49.77</td><td>67.87</td></tr>
+<tr class="ours"><th scope="row">GeoBridgeNet-A3 init. + COS3D</th><td>50.54</td><td>71.32</td></tr>
+</tbody></table></div>
+<p class="table-note">GeoBridgeNet values are from the current manuscript. External baseline values are reported in the <a href="https://papers.neurips.cc/paper_files/paper/2025/file/10a6bdcabbd5a3d36b760daa295f63c1-Paper-Conference.pdf">COS3D paper's LeRF comparison</a>, not newly measured here. mAcc denotes Acc@0.25 in the COS3D evaluator.</p>
+<p>A1 gives the highest GeoBridgeNet mIoU, while A3 gives the highest GeoBridgeNet mAcc. <a href="#grounding">Explore the GeoBridgeNet-A3 results ↑</a></p>
+<a class="figure-link" href="assets/figure-8.png" target="_blank" rel="noopener"><img src="assets/figure-8.png" loading="lazy" alt="COS3D text-query object isolation examples from Teatime and Waldo Kitchen"></a>
+<p class="caption">Text-conditioned object isolation from the GeoBridgeNet-A3-initialized scene representation.</p>
+</section>
+<section class="content acknowledgements">
+<h2>Acknowledgements</h2>
+<p>Our task-transfer pipelines build on DepthSplat and COS3D / Gaussian Splatting. Footage and data: Rui Wang, Curtis Adams / Pexels, ETH3D and LERF. See <a href="assets/CREDITS.md">media sources and licenses</a>.</p>
+<p class="table-note" id="result-notes">Tables summarize the current manuscript; they do not report measurements of the displayed demo clips. Released-checkpoint evaluation notes are available in the <a href="https://github.com/Lovelymili/GeoBridge-NAS#depth-evaluation">repository</a>.</p>
+<p class="template-credit">Publication header: <a href="https://shape-of-motion.github.io/">Shape of Motion</a>. Interactive sections: <a href="https://monst3r-project.github.io/">MonST3R</a>.</p>
+</section>
+</main>
+<script src="main.js?v=geobridge-1"></script>
+<script src="depth-comparison.js?v=geobridge-1"></script>
+<script src="assets/comparisons/semantics/cameras.js"></script>
+<script src="scene-viewer.js?v=geobridge-1"></script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+{
+  "protocol": "Depth Pro runs on decoded RGB left halves; DDN is the matching right half of the same existing video frame, reused without re-inference. Video compression affects both extracted halves.",
+  "display": "OpenCV TURBO, fixed 0\u201310 m for both models and every frame; no per-image normalization or smoothing.",
+  "selection": "Three predefined timestamps per clip; all six outputs retained, not ranked by quality.",
+  "ground_truth": null,
+  "metrics": null,
+  "ddn": {
+    "source": "Existing video result; settings documented in docs/assets/CREDITS.md",
+    "precision": "FP32 (source documentation)",
+    "postprocess": "horizontal-flip averaging (source documentation)",
+    "training_domain": "NYU",
+    "raw_depth_available": false
+  },
+  "depth_pro": {
+    "checkpoint_sha256": "3eb35ca68168ad3d14cb150f8947a4edf85589941661fdb2686259c80685c0ce",
+    "precision": "FP32",
+    "focal_length": "estimated by official model; no camera intrinsics supplied",
+    "source": "https://github.com/apple-aiml-research/ml-depth-pro"
+  },
+  "environment": {
+    "torch": "2.6.0+cu124",
+    "gpu": "NVIDIA GeForce RTX 4090"
+  },
+  "samples": [
+    {
+      "id": "meeting_room-0015",
+      "scene": "meeting_room",
+      "frame": 15,
+      "time_seconds": 0.5,
+      "input_file": "meeting_room-0015-rgb.png",
+      "source": "docs/assets/demos/depth-meeting_room.mp4",
+      "source_sha256": "e49d508c1f5a840f2ef572e47c17f29ee0a9fcd5b290ed1d0c2b4abb2dc57759",
+      "estimated_focal_px": 668.5670166015625,
+      "input_sha256": "3dda8e049b9e5496e124f5163b19fd0d99a05521a925cbb122099bfe34fc1d08"
+    },
+    {
+      "id": "meeting_room-0075",
+      "scene": "meeting_room",
+      "frame": 75,
+      "time_seconds": 2.5,
+      "input_file": "meeting_room-0075-rgb.png",
+      "source": "docs/assets/demos/depth-meeting_room.mp4",
+      "source_sha256": "e49d508c1f5a840f2ef572e47c17f29ee0a9fcd5b290ed1d0c2b4abb2dc57759",
+      "estimated_focal_px": 760.6800537109375,
+      "input_sha256": "c8b1cf7fd633aafbc8425a507751774586c0ad73f13e41699be5ea727ed1593d"
+    },
+    {
+      "id": "meeting_room-0135",
+      "scene": "meeting_room",
+      "frame": 135,
+      "time_seconds": 4.5,
+      "input_file": "meeting_room-0135-rgb.png",
+      "source": "docs/assets/demos/depth-meeting_room.mp4",
+      "source_sha256": "e49d508c1f5a840f2ef572e47c17f29ee0a9fcd5b290ed1d0c2b4abb2dc57759",
+      "estimated_focal_px": 757.4575805664062,
+      "input_sha256": "d02c0097dd3fdeb1958c1fb87aa22f500a35f9d84fbfccc467ded6e2a89e66d5"
+    },
+    {
+      "id": "living_room-0015",
+      "scene": "living_room",
+      "frame": 15,
+      "time_seconds": 0.5005000000000001,
+      "input_file": "living_room-0015-rgb.png",
+      "source": "docs/assets/demos/depth-living_room.mp4",
+      "source_sha256": "00c6b46d3faa680bae52f7f836c9d2df65ac3eda7ffc0eb48de793348c9cb923",
+      "estimated_focal_px": 510.765869140625,
+      "input_sha256": "e6220c5e687ed4867aaf50af4f0eca1c3a12002e2fb39f9bf995f5582ed5ddbb"
+    },
+    {
+      "id": "living_room-0075",
+      "scene": "living_room",
+      "frame": 75,
+      "time_seconds": 2.5025,
+      "input_file": "living_room-0075-rgb.png",
+      "source": "docs/assets/demos/depth-living_room.mp4",
+      "source_sha256": "00c6b46d3faa680bae52f7f836c9d2df65ac3eda7ffc0eb48de793348c9cb923",
+      "estimated_focal_px": 508.1849365234375,
+      "input_sha256": "45e2f8cda4affba161ecfdc56d47722987b1299f659828fe4c25b25cee3f4c28"
+    },
+    {
+      "id": "living_room-0135",
+      "scene": "living_room",
+      "frame": 135,
+      "time_seconds": 4.5045,
+      "input_file": "living_room-0135-rgb.png",
+      "source": "docs/assets/demos/depth-living_room.mp4",
+      "source_sha256": "00c6b46d3faa680bae52f7f836c9d2df65ac3eda7ffc0eb48de793348c9cb923",
+      "estimated_focal_px": 512.7409057617188,
+      "input_sha256": "9b7d37b1e7ae8e8aac705edf5ee7780d080694aadade391cb97d803fee365537"
+    }
+  ]
+}
