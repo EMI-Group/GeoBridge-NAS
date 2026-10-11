@@ -123,7 +123,7 @@ COS3D scenes: **Figurines · Teatime · Ramen · Waldo Kitchen**. See the [scene
 The core environment uses **Python 3.10 · PyTorch 2.6.0 · CUDA 12.4**. Clone the repository, then run commands from its root.
 
 ```bash
-git clone https://github.com/Lovelymili/GeoBridge-NAS.git
+git clone https://github.com/EMI-Group/GeoBridge-NAS.git
 cd GeoBridge-NAS
 python -m pip install torch==2.6.0 torchvision==0.21.0 --index-url https://download.pytorch.org/whl/cu124
 python -m pip install -r requirements.txt
