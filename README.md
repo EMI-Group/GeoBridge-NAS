@@ -7,7 +7,7 @@
 
 **Evolve once. Reuse decoder topologies across geometric vision systems.**
 
-<a href="https://lovelymili.github.io/GeoBridge-NAS/"><img src="https://img.shields.io/badge/Project-Page-green" alt="Project Page"></a>
+<a href="https://emi-group.github.io/GeoBridge-NAS/"><img src="https://img.shields.io/badge/Project-Page-green" alt="Project Page"></a>
 <a href="https://huggingface.co/kujimili/GeoBridge-NAS"><img src="https://img.shields.io/badge/Hugging%20Face-Model-blue?logo=huggingface&amp;logoColor=FFD21E" alt="Hugging Face Model"></a>
 <a href="#depth-evaluation"><img src="https://img.shields.io/badge/Quick-Start-orange" alt="Quick Start"></a>
 
@@ -200,7 +200,7 @@ Follow the **[COS3D guide](cos3d/README.md)** for its separate environment, scen
 
 ## Interactive demos
 
-The [project page](https://lovelymili.github.io/GeoBridge-NAS/) pairs two novel-view reconstructions and two semantic Gaussian scenes. Rotate, pan and zoom each scene independently; semantic viewers start with **Original scene** and offer text-query highlighting and object isolation.
+The [project page](https://emi-group.github.io/GeoBridge-NAS/) pairs two novel-view reconstructions and two semantic Gaussian scenes. Rotate, pan and zoom each scene independently; semantic viewers start with **Original scene** and offer text-query highlighting and object isolation.
 
 To preview the page locally, run from the repository root:
 
