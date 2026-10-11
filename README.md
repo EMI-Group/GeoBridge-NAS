@@ -1,3 +1,13 @@
+<p align="center">
+  <a href="https://github.com/EMI-Group/evox">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="assets/evox_brand_light.svg">
+      <source media="(prefers-color-scheme: light)" srcset="assets/evox_brand_dark.svg">
+      <img alt="EvoX Logo" height="128" width="500" src="assets/evox_brand_dark.svg">
+    </picture>
+  </a>
+</p>
+
 <div align="center">
 
 # GeoBridge: Evolving Transferable Decoder Topologies for Geometric Vision
